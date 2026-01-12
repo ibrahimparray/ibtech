@@ -1,0 +1,1374 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Web Developer | Ibrahim Parray</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Orbitron:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --bg-primary: #0a0a0f;
+      --surface: #12121a;
+      --text-primary: #e8e8f0;
+      --accent-primary: #6366f1;
+      --accent-secondary: #22d3ee;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      height: 100%;
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      scroll-behavior: smooth;
+    }
+    
+    .app-wrapper {
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    
+    .orbitron {
+      font-family: 'Orbitron', sans-serif;
+    }
+    
+    /* 3D Grid Background */
+    .grid-3d {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+        linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      perspective: 1000px;
+      transform-style: preserve-3d;
+      z-index: 0;
+    }
+    
+    .grid-3d::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+    }
+    
+    /* Floating Orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: float 8s ease-in-out infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+    
+    .orb-1 {
+      width: 400px;
+      height: 400px;
+      background: rgba(99, 102, 241, 0.3);
+      top: -100px;
+      right: -100px;
+      animation-delay: 0s;
+    }
+    
+    .orb-2 {
+      width: 300px;
+      height: 300px;
+      background: rgba(34, 211, 238, 0.2);
+      bottom: 10%;
+      left: -100px;
+      animation-delay: -4s;
+    }
+    
+    .orb-3 {
+      width: 250px;
+      height: 250px;
+      background: rgba(168, 85, 247, 0.2);
+      top: 50%;
+      right: 10%;
+      animation-delay: -2s;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -30px) scale(1.05); }
+      66% { transform: translate(-20px, 20px) scale(0.95); }
+    }
+    
+    /* 3D Card Effect */
+    .card-3d {
+      background: linear-gradient(135deg, rgba(18, 18, 26, 0.9) 0%, rgba(18, 18, 26, 0.7) 100%);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 20px;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-style: preserve-3d;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card-3d::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.5), transparent);
+    }
+    
+    .card-3d:hover {
+      transform: translateY(-10px) rotateX(5deg);
+      border-color: rgba(99, 102, 241, 0.5);
+      box-shadow: 
+        0 25px 50px -12px rgba(99, 102, 241, 0.25),
+        0 0 50px rgba(99, 102, 241, 0.1);
+    }
+    
+    /* Glowing Button */
+    .btn-glow {
+      position: relative;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      border: none;
+      border-radius: 12px;
+      padding: 16px 32px;
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+    
+    .btn-glow::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+      transform: rotate(45deg);
+      transition: all 0.5s ease;
+    }
+    
+    .btn-glow:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.5);
+    }
+    
+    .btn-glow:hover::before {
+      left: 100%;
+    }
+    
+    .btn-outline {
+      background: transparent;
+      border: 2px solid rgba(99, 102, 241, 0.5);
+      border-radius: 12px;
+      padding: 14px 30px;
+      color: #e8e8f0;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-outline:hover {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: #6366f1;
+      transform: translateY(-3px);
+    }
+    
+    /* Navigation */
+    .nav-link {
+      position: relative;
+      color: rgba(232, 232, 240, 0.7);
+      text-decoration: none;
+      padding: 8px 16px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .nav-link:hover, .nav-link.active {
+      color: #e8e8f0;
+    }
+    
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #6366f1, #22d3ee);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+    
+    .nav-link:hover::after, .nav-link.active::after {
+      width: 100%;
+    }
+    
+    /* Section Styles */
+    .section {
+      position: relative;
+      z-index: 10;
+      padding: 100px 20px;
+    }
+    
+    .section-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #e8e8f0 0%, #6366f1 50%, #22d3ee 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    /* Business Type Cards */
+    .business-card {
+      background: linear-gradient(135deg, rgba(18, 18, 26, 0.95) 0%, rgba(18, 18, 26, 0.8) 100%);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      border-radius: 24px;
+      padding: 32px;
+      cursor: pointer;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .business-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .business-card:hover::before {
+      opacity: 1;
+    }
+    
+    .business-card:hover {
+      transform: translateY(-15px) scale(1.02);
+      border-color: rgba(99, 102, 241, 0.5);
+      box-shadow: 
+        0 30px 60px -15px rgba(99, 102, 241, 0.3),
+        0 0 0 1px rgba(99, 102, 241, 0.1) inset;
+    }
+    
+    .business-icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(34, 211, 238, 0.1) 100%);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 32px;
+      transition: all 0.3s ease;
+    }
+    
+    .business-card:hover .business-icon {
+      transform: scale(1.1) rotate(5deg);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(34, 211, 238, 0.2) 100%);
+    }
+    
+    /* Service Cards */
+    .service-card {
+      background: linear-gradient(135deg, rgba(18, 18, 26, 0.9) 0%, rgba(18, 18, 26, 0.7) 100%);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      border-radius: 20px;
+      padding: 28px;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .service-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #6366f1, #22d3ee);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    
+    .service-card:hover::after {
+      transform: scaleX(1);
+    }
+    
+    .service-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+    
+    /* Form Styles */
+    .form-input {
+      width: 100%;
+      background: rgba(18, 18, 26, 0.8);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 12px;
+      padding: 16px 20px;
+      color: #e8e8f0;
+      font-size: 16px;
+      font-family: 'Space Grotesk', sans-serif;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+    
+    .form-input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+    }
+    
+    .form-input::placeholder {
+      color: rgba(232, 232, 240, 0.4);
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .animate-in {
+      animation: fadeInUp 0.8s ease forwards;
+    }
+    
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+    .delay-5 { animation-delay: 0.5s; }
+    
+    /* Hero 3D Text */
+    .hero-text-3d {
+      text-shadow: 
+        0 1px 0 rgba(99, 102, 241, 0.4),
+        0 2px 0 rgba(99, 102, 241, 0.3),
+        0 3px 0 rgba(99, 102, 241, 0.2),
+        0 4px 0 rgba(99, 102, 241, 0.1),
+        0 5px 10px rgba(0, 0, 0, 0.4);
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(18, 18, 26, 0.5);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.5);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(99, 102, 241, 0.7);
+    }
+    
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+    
+    .modal-overlay.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: linear-gradient(135deg, rgba(18, 18, 26, 0.98) 0%, rgba(18, 18, 26, 0.95) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 80%;
+      overflow-y: auto;
+      position: relative;
+      animation: modalIn 0.3s ease;
+    }
+    
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #e8e8f0;
+      font-size: 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .modal-close:hover {
+      background: rgba(99, 102, 241, 0.2);
+      transform: rotate(90deg);
+    }
+    
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: white;
+      padding: 16px 24px;
+      border-radius: 12px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      z-index: 2000;
+      animation: toastIn 0.3s ease;
+      box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
+    }
+    
+    .toast.active {
+      display: flex;
+    }
+    
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Mobile Menu */
+    .mobile-menu-btn {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 10px;
+    }
+    
+    .mobile-menu-btn span {
+      width: 25px;
+      height: 2px;
+      background: #e8e8f0;
+      transition: all 0.3s ease;
+    }
+    
+    @media (max-width: 768px) {
+      .mobile-menu-btn {
+        display: flex;
+      }
+      
+      .nav-links {
+        position: fixed;
+        top: 80px;
+        left: 0;
+        right: 0;
+        background: rgba(10, 10, 15, 0.98);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        padding: 20px;
+        gap: 10px;
+        transform: translateY(-150%);
+        transition: transform 0.3s ease;
+        border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+      }
+      
+      .nav-links.active {
+        transform: translateY(0);
+      }
+    }
+    
+    /* Loading Spinner */
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full">
+  <div class="app-wrapper"><!-- Background Effects -->
+   <div class="grid-3d"></div>
+   <div class="orb orb-1"></div>
+   <div class="orb orb-2"></div>
+   <div class="orb orb-3"></div><!-- Navigation -->
+   <nav style="position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(99, 102, 241, 0.1);">
+    <div style="max-width: 1400px; margin: 0 auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between;">
+     <div style="display: flex; align-items: center; gap: 12px;">
+      <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #6366f1, #22d3ee); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+       <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+       </svg>
+      </div><span class="orbitron" style="font-size: 18px; font-weight: 700; background: linear-gradient(90deg, #e8e8f0, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" id="nav-name">Ibrahim Parray</span>
+     </div>
+     <div class="nav-links" style="display: flex; align-items: center; gap: 8px;" id="nav-links"><span class="nav-link active" onclick="scrollToSection('home')">Home</span> <span class="nav-link" onclick="scrollToSection('business')">Business Types</span> <span class="nav-link" onclick="scrollToSection('services')">Services</span> <span class="nav-link" onclick="scrollToSection('about')">About</span> <span class="nav-link" onclick="scrollToSection('contact')">Contact</span>
+     </div>
+     <div class="mobile-menu-btn" onclick="toggleMobileMenu()"><span></span> <span></span> <span></span>
+     </div>
+    </div>
+   </nav><!-- Hero Section -->
+   <section id="home" class="section" style="min-height: 100%; display: flex; align-items: center; padding-top: 120px;">
+    <div style="max-width: 1400px; margin: 0 auto; width: 100%;">
+     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;" class="hero-grid">
+      <div class="animate-in" style="opacity: 0;">
+       <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 50px; padding: 8px 16px; margin-bottom: 24px;"><span style="width: 8px; height: 8px; background: #22d3ee; border-radius: 50%; animation: pulse 2s infinite;"></span> <span style="font-size: 14px; color: rgba(232, 232, 240, 0.8);">Available for new projects</span>
+       </div>
+       <h1 class="orbitron hero-text-3d" style="font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; line-height: 1.1; margin-bottom: 24px;" id="hero-title">AI-Powered Websites<br><span style="background: linear-gradient(90deg, #6366f1, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Tailored for Your Business</span></h1>
+       <p style="font-size: 18px; color: rgba(232, 232, 240, 0.7); line-height: 1.7; margin-bottom: 36px; max-width: 500px;" id="hero-subtitle">Transform your online presence with intelligent, high-performance websites that leverage AI to drive growth and automate your business processes.</p>
+       <div style="display: flex; gap: 16px; flex-wrap: wrap;"><button class="btn-glow" onclick="scrollToSection('business')"> Explore by Business 
+         <svg style="display: inline; margin-left: 8px; vertical-align: middle;" width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7" />
+         </svg></button> <button class="btn-outline" onclick="scrollToSection('contact')"> Contact Me </button>
+       </div>
+       <div style="display: flex; gap: 40px; margin-top: 48px;">
+        <div>
+         <div class="orbitron" style="font-size: 32px; font-weight: 700; color: #6366f1;">
+          50+
+         </div>
+         <div style="font-size: 14px; color: rgba(232, 232, 240, 0.5);">
+          Projects Delivered
+         </div>
+        </div>
+        <div>
+         <div class="orbitron" style="font-size: 32px; font-weight: 700; color: #22d3ee;">
+          100%
+         </div>
+         <div style="font-size: 14px; color: rgba(232, 232, 240, 0.5);">
+          Client Satisfaction
+         </div>
+        </div>
+        <div>
+         <div class="orbitron" style="font-size: 32px; font-weight: 700; color: #a855f7;">
+          24/7
+         </div>
+         <div style="font-size: 14px; color: rgba(232, 232, 240, 0.5);">
+          AI Support
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="animate-in delay-2" style="opacity: 0; display: flex; justify-content: center;"><!-- 3D Cube Animation -->
+       <div style="position: relative; width: 350px; height: 350px; perspective: 1000px;">
+        <div style="position: absolute; width: 100%; height: 100%; transform-style: preserve-3d; animation: rotateCube 20s linear infinite;">
+         <div style="position: absolute; width: 200px; height: 200px; left: 75px; top: 75px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(99, 102, 241, 0.1) 100%); border: 1px solid rgba(99, 102, 241, 0.5); border-radius: 20px; transform: translateZ(100px); display: flex; align-items: center; justify-content: center;">
+          <svg width="80" height="80" viewbox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="1.5"><circle cx="12" cy="12" r="10" /> <path d="M12 2a10 10 0 0 1 0 20M12 2a10 10 0 0 0 0 20M2 12h20" />
+          </svg>
+         </div>
+         <div style="position: absolute; width: 200px; height: 200px; left: 75px; top: 75px; background: linear-gradient(135deg, rgba(34, 211, 238, 0.3) 0%, rgba(34, 211, 238, 0.1) 100%); border: 1px solid rgba(34, 211, 238, 0.5); border-radius: 20px; transform: rotateY(90deg) translateZ(100px); display: flex; align-items: center; justify-content: center;">
+          <svg width="80" height="80" viewbox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" /> <path d="M9 9h6M9 12h6M9 15h4" />
+          </svg>
+         </div>
+         <div style="position: absolute; width: 200px; height: 200px; left: 75px; top: 75px; background: linear-gradient(135deg, rgba(168, 85, 247, 0.3) 0%, rgba(168, 85, 247, 0.1) 100%); border: 1px solid rgba(168, 85, 247, 0.5); border-radius: 20px; transform: rotateY(-90deg) translateZ(100px); display: flex; align-items: center; justify-content: center;">
+          <svg width="80" height="80" viewbox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+         </div>
+         <div style="position: absolute; width: 200px; height: 200px; left: 75px; top: 75px; background: linear-gradient(135deg, rgba(34, 197, 94, 0.3) 0%, rgba(34, 197, 94, 0.1) 100%); border: 1px solid rgba(34, 197, 94, 0.5); border-radius: 20px; transform: rotateY(180deg) translateZ(100px); display: flex; align-items: center; justify-content: center;">
+          <svg width="80" height="80" viewbox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+          </svg>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <style>
+      @keyframes rotateCube {
+        from { transform: rotateX(-15deg) rotateY(0deg); }
+        to { transform: rotateX(-15deg) rotateY(360deg); }
+      }
+      
+      @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.5; transform: scale(1.2); }
+      }
+      
+      @media (max-width: 900px) {
+        .hero-grid {
+          grid-template-columns: 1fr !important;
+          text-align: center;
+        }
+        .hero-grid > div:last-child {
+          display: none !important;
+        }
+      }
+    </style><!-- Business Types Section -->
+   <section id="business" class="section">
+    <div style="max-width: 1400px; margin: 0 auto;">
+     <div style="text-align: center; margin-bottom: 60px;"><span style="display: inline-block; background: linear-gradient(90deg, rgba(99, 102, 241, 0.2), rgba(34, 211, 238, 0.2)); padding: 8px 20px; border-radius: 50px; font-size: 14px; color: #22d3ee; margin-bottom: 16px;">EXPLORE BY BUSINESS</span>
+      <h2 class="section-title">Solutions for Every Business</h2>
+      <p style="color: rgba(232, 232, 240, 0.6); max-width: 600px; margin: 0 auto;">Select your business type to discover tailored AI-powered solutions designed specifically for your needs.</p>
+     </div>
+     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;"><!-- Startups -->
+      <div class="business-card" onclick="openBusinessModal('startups')">
+       <div class="business-icon">
+        🚀
+       </div>
+       <h3 style="font-size: 22px; font-weight: 700; margin-bottom: 12px;">Startups</h3>
+       <p style="color: rgba(232, 232, 240, 0.6); line-height: 1.6; margin-bottom: 16px;">Launch fast with scalable, AI-optimized websites that grow with your vision.</p>
+       <div style="display: flex; align-items: center; gap: 8px; color: #6366f1; font-weight: 500;"><span>Learn More</span>
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+       </div>
+      </div><!-- Local Businesses -->
+      <div class="business-card" onclick="openBusinessModal('local')">
+       <div class="business-icon">
+        🏪
+       </div>
+       <h3 style="font-size: 22px; font-weight: 700; margin-bottom: 12px;">Local Businesses</h3>
+       <p style="color: rgba(232, 232, 240, 0.6); line-height: 1.6; margin-bottom: 16px;">Dominate local search and convert nearby customers with smart local SEO.</p>
+       <div style="display: flex; align-items: center; gap: 8px; color: #6366f1; font-weight: 500;"><span>Learn More</span>
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+       </div>
+      </div><!-- Agencies -->
+      <div class="business-card" onclick="openBusinessModal('agencies')">
+       <div class="business-icon">
+        🎯
+       </div>
+       <h3 style="font-size: 22px; font-weight: 700; margin-bottom: 12px;">Agencies</h3>
+       <p style="color: rgba(232, 232, 240, 0.6); line-height: 1.6; margin-bottom: 16px;">White-label solutions and scalable systems for your clients.</p>
+       <div style="display: flex; align-items: center; gap: 8px; color: #6366f1; font-weight: 500;"><span>Learn More</span>
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+       </div>
+      </div><!-- Personal Brands -->
+      <div class="business-card" onclick="openBusinessModal('personal')">
+       <div class="business-icon">
+        ✨
+       </div>
+       <h3 style="font-size: 22px; font-weight: 700; margin-bottom: 12px;">Personal Brands</h3>
+       <p style="color: rgba(232, 232, 240, 0.6); line-height: 1.6; margin-bottom: 16px;">Stand out with a unique digital presence that showcases your expertise.</p>
+       <div style="display: flex; align-items: center; gap: 8px; color: #6366f1; font-weight: 500;"><span>Learn More</span>
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+       </div>
+      </div><!-- Enterprises -->
+      <div class="business-card" onclick="openBusinessModal('enterprise')">
+       <div class="business-icon">
+        🏢
+       </div>
+       <h3 style="font-size: 22px; font-weight: 700; margin-bottom: 12px;">Enterprises</h3>
+       <p style="color: rgba(232, 232, 240, 0.6); line-height: 1.6; margin-bottom: 16px;">Enterprise-grade solutions with advanced AI integrations and security.</p>
+       <div style="display: flex; align-items: center; gap: 8px; color: #6366f1; font-weight: 500;"><span>Learn More</span>
+        <svg width="16" height="16" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Services Section -->
+   <section id="services" class="section" style="background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.03) 50%, transparent 100%);">
+    <div style="max-width: 1400px; margin: 0 auto;">
+     <div style="text-align: center; margin-bottom: 60px;"><span style="display: inline-block; background: linear-gradient(90deg, rgba(99, 102, 241, 0.2), rgba(34, 211, 238, 0.2)); padding: 8px 20px; border-radius: 50px; font-size: 14px; color: #22d3ee; margin-bottom: 16px;">SERVICES</span>
+      <h2 class="section-title">What I Offer</h2>
+      <p style="color: rgba(232, 232, 240, 0.6); max-width: 600px; margin: 0 auto;">Comprehensive AI-powered web solutions to transform your digital presence.</p>
+     </div>
+     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;"><!-- Service 1 -->
+      <div class="service-card">
+       <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+        <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" /> <path d="M9 9h6M9 12h6M9 15h4" />
+        </svg>
+       </div>
+       <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 12px;">AI Website Development</h3>
+       <p style="color: rgba(232, 232, 240, 0.6); line-height: 1.6;">Custom websites built with AI-powered tools for faster development, smarter design decisions, and optimized performance.</p>
+      </div><!-- Service 2 -->
+      <div class="service-card">
+       <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #22d3ee, #06b6d4); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+        <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+        </svg>
+       </div>
+       <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 12px;">Custom Web Applications</h3>
+       <p style="color: rgba(232, 232, 240, 0.6); line-height: 1.6;">Tailored web applications with complex functionality, databases, and integrations built for your specific business needs.</p>
+      </div><!-- Service 3 -->
+      <div class="service-card">
+       <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #a855f7, #9333ea); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+        <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+       </div>
+       <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 12px;">AI Chatbots &amp; Automation</h3>
+       <p style="color: rgba(232, 232, 240, 0.6); line-height: 1.6;">Intelligent chatbots and automation systems that handle customer inquiries, bookings, and support 24/7.</p>
+      </div><!-- Service 4 -->
+      <div class="service-card">
+       <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+        <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+        </svg>
+       </div>
+       <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 12px;">Landing Pages &amp; Funnels</h3>
+       <p style="color: rgba(232, 232, 240, 0.6); line-height: 1.6;">High-converting landing pages and sales funnels optimized with AI for maximum conversions and lead generation.</p>
+      </div><!-- Service 5 -->
+      <div class="service-card">
+       <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #f97316, #ea580c); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+        <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="11" cy="11" r="8" /> <path d="M21 21l-4.35-4.35" />
+        </svg>
+       </div>
+       <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 12px;">Website Optimization &amp; SEO</h3>
+       <p style="color: rgba(232, 232, 240, 0.6); line-height: 1.6;">Speed optimization, technical SEO, and AI-driven content strategies to boost your search rankings and traffic.</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- About Section -->
+   <section id="about" class="section">
+    <div style="max-width: 1400px; margin: 0 auto;">
+     <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px; align-items: center;" class="about-grid">
+      <div class="card-3d" style="padding: 40px; text-align: center;">
+       <div style="width: 180px; height: 180px; background: linear-gradient(135deg, #6366f1, #22d3ee); border-radius: 50%; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center; position: relative;">
+        <div style="position: absolute; inset: 4px; background: #12121a; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><div class="profile-ring">
+  <img src="profile.png" class="profile-img">
+</div>
+        </div>
+       </div>
+       <h3 class="orbitron" style="font-size: 24px; font-weight: 700; margin-bottom: 8px;" id="about-name">Ibrahim Parray</h3>
+       <p style="color: #6366f1; font-weight: 500;" id="about-title">AI Web Developer</p>
+       <div style="display: flex; justify-content: center; gap: 12px; margin-top: 24px;"><a href="https://instagram.com/ibrahim__066_" target="_blank" rel="noopener noreferrer" style="width: 44px; height: 44px; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #e8e8f0; text-decoration: none; transition: all 0.3s ease;">
+         <svg width="20" height="20" viewbox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+         </svg></a> <a href="mailto:ibrahimparray066@gmail.com" style="width: 44px; height: 44px; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #e8e8f0; text-decoration: none; transition: all 0.3s ease;">
+         <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /> <polyline points="22,6 12,13 2,6" />
+         </svg></a> <a href="https://wa.me/917780886656" target="_blank" rel="noopener noreferrer" style="width: 44px; height: 44px; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #e8e8f0; text-decoration: none; transition: all 0.3s ease;">
+         <svg width="20" height="20" viewbox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+         </svg></a>
+       </div>
+      </div>
+      <div><span style="display: inline-block; background: linear-gradient(90deg, rgba(99, 102, 241, 0.2), rgba(34, 211, 238, 0.2)); padding: 8px 20px; border-radius: 50px; font-size: 14px; color: #22d3ee; margin-bottom: 16px;">ABOUT ME</span>
+       <h2 class="section-title">Building the Future of Web</h2>
+       <p style="color: rgba(232, 232, 240, 0.7); line-height: 1.8; margin-bottom: 20px;">I'm an AI Web Developer passionate about creating intelligent, high-performance websites that transform businesses. By leveraging cutting-edge AI technologies, I build solutions that aren't just beautiful—they're smart.</p>
+       <p style="color: rgba(232, 232, 240, 0.7); line-height: 1.8; margin-bottom: 32px;">My mission is to help businesses harness the power of artificial intelligence to automate processes, improve user experiences, and drive measurable growth. From startups to enterprises, I deliver tailored solutions that make a real impact.</p>
+       <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+         <div style="width: 40px; height: 40px; background: rgba(99, 102, 241, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+          <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+          </svg>
+         </div><span style="color: rgba(232, 232, 240, 0.8);">Fast Development</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+         <div style="width: 40px; height: 40px; background: rgba(34, 211, 238, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+          <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2"><circle cx="12" cy="12" r="10" /> <path d="M12 6v6l4 2" />
+          </svg>
+         </div><span style="color: rgba(232, 232, 240, 0.8);">24/7 AI Support</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+         <div style="width: 40px; height: 40px; background: rgba(168, 85, 247, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+          <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+         </div><span style="color: rgba(232, 232, 240, 0.8);">Scalable Solutions</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+         <div style="width: 40px; height: 40px; background: rgba(34, 197, 94, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+          <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /> <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+         </div><span style="color: rgba(232, 232, 240, 0.8);">Result Focused</span>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <style>
+      @media (max-width: 900px) {
+        .about-grid {
+          grid-template-columns: 1fr !important;
+        }
+      }
+    </style><!-- Contact Section -->
+   <section id="contact" class="section" style="background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.03) 50%, transparent 100%);">
+    <div style="max-width: 1400px; margin: 0 auto;">
+     <div style="text-align: center; margin-bottom: 60px;"><span style="display: inline-block; background: linear-gradient(90deg, rgba(99, 102, 241, 0.2), rgba(34, 211, 238, 0.2)); padding: 8px 20px; border-radius: 50px; font-size: 14px; color: #22d3ee; margin-bottom: 16px;">GET IN TOUCH</span>
+      <h2 class="section-title">Let's Build Something Amazing</h2>
+      <p style="color: rgba(232, 232, 240, 0.6); max-width: 600px; margin: 0 auto;">Ready to transform your business with AI? Send me a message and let's discuss your project.</p>
+     </div>
+     <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px;" class="contact-grid"><!-- Contact Info -->
+      <div>
+       <div class="card-3d" style="padding: 32px; margin-bottom: 24px;">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+         <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+          <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /> <polyline points="22,6 12,13 2,6" />
+          </svg>
+         </div>
+         <div>
+          <div style="font-size: 14px; color: rgba(232, 232, 240, 0.5); margin-bottom: 4px;">
+           Email
+          </div><a href="mailto:ibrahimparray066@gmail.com" style="color: #e8e8f0; text-decoration: none;" id="contact-email-display">ibrahimparray066@gmail.com</a>
+         </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+         <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+          <svg width="24" height="24" viewbox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+          </svg>
+         </div>
+         <div>
+          <div style="font-size: 14px; color: rgba(232, 232, 240, 0.5); margin-bottom: 4px;">
+           WhatsApp
+          </div><a href="https://wa.me/917780886656" target="_blank" rel="noopener noreferrer" style="color: #e8e8f0; text-decoration: none;" id="contact-phone-display">+91 7780886656</a>
+         </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+         <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #f97316, #ea580c); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+          <svg width="24" height="24" viewbox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+          </svg>
+         </div>
+         <div>
+          <div style="font-size: 14px; color: rgba(232, 232, 240, 0.5); margin-bottom: 4px;">
+           Instagram
+          </div><a href="https://instagram.com/ibrahim__066_" target="_blank" rel="noopener noreferrer" style="color: #e8e8f0; text-decoration: none;">@ibrahim__066_</a>
+         </div>
+        </div>
+        <div style="display: flex; align-items: flex-start; gap: 16px;">
+         <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #22d3ee, #06b6d4); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /> <circle cx="12" cy="10" r="3" />
+          </svg>
+         </div>
+         <div>
+          <div style="font-size: 14px; color: rgba(232, 232, 240, 0.5); margin-bottom: 4px;">
+           Location
+          </div><span style="color: #e8e8f0;">J&amp;K, Srinagar – 190017</span>
+         </div>
+        </div>
+       </div>
+      </div><!-- Contact CTA -->
+      <div class="card-3d" style="padding: 48px; text-align: center;">
+       <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #6366f1, #22d3ee); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+        <svg width="40" height="40" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+       </div>
+       <h3 style="font-size: 28px; font-weight: 700; margin-bottom: 16px; color: #e8e8f0;">Ready to Get Started?</h3>
+       <p style="color: rgba(232, 232, 240, 0.6); margin-bottom: 32px; font-size: 16px; line-height: 1.6;">Let's discuss your project and create something amazing together. Choose your preferred way to connect.</p>
+       <div style="display: flex; flex-direction: column; gap: 16px; max-width: 400px; margin: 0 auto;"><a href="https://wa.me/917780886656" target="_blank" rel="noopener noreferrer" class="btn-glow" style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 12px;">
+         <svg width="24" height="24" viewbox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+         </svg><span>Message on WhatsApp</span> </a> <a href="mailto:ibrahimparray066@gmail.com" class="btn-outline" style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 12px;">
+         <svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /> <polyline points="22,6 12,13 2,6" />
+         </svg><span>Send an Email</span> </a> <a href="https://instagram.com/ibrahim__066_" target="_blank" rel="noopener noreferrer" class="btn-outline" style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 12px;">
+         <svg width="24" height="24" viewbox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+         </svg><span>Connect on Instagram</span> </a>
+       </div>
+       <div style="margin-top: 32px; padding-top: 32px; border-top: 1px solid rgba(99, 102, 241, 0.1);">
+        <p style="color: rgba(232, 232, 240, 0.5); font-size: 14px;">⚡ Average response time: Within 24 hours</p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <style>
+      @media (max-width: 900px) {
+        .contact-grid {
+          grid-template-columns: 1fr !important;
+        }
+        .form-row {
+          grid-template-columns: 1fr !important;
+        }
+      }
+    </style><!-- Footer -->
+   <footer style="position: relative; z-index: 10; padding: 40px 20px; border-top: 1px solid rgba(99, 102, 241, 0.1);">
+    <div style="max-width: 1400px; margin: 0 auto; text-align: center;">
+     <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 16px;">
+      <div style="width: 35px; height: 35px; background: linear-gradient(135deg, #6366f1, #22d3ee); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+       <svg width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+       </svg>
+      </div><span class="orbitron" style="font-size: 16px; font-weight: 700;" id="footer-name">Ibrahim Parray</span>
+     </div>
+     <p style="color: rgba(232, 232, 240, 0.5); font-size: 14px;">© 2024 All rights reserved. Built with AI ✨</p>
+    </div>
+   </footer><!-- Business Modal -->
+   <div class="modal-overlay" id="business-modal">
+    <div class="modal-content"><button class="modal-close" onclick="closeBusinessModal()">✕</button>
+     <div id="modal-content-inner"></div>
+    </div>
+   </div><!-- Toast -->
+   <div class="toast" id="toast">
+    <svg width="20" height="20" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /> <polyline points="22 4 12 14.01 9 11.01" />
+    </svg><span id="toast-message">Message sent successfully!</span>
+   </div>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      hero_title: 'AI-Powered Websites Tailored for Your Business',
+      hero_subtitle: 'Transform your online presence with intelligent, high-performance websites that leverage AI to drive growth and automate your business processes.',
+      about_name: 'Ibrahim Parray',
+      about_title: 'AI Web Developer',
+      contact_email: 'ibrahimparray066@gmail.com',
+      contact_phone: '+91 7780886656',
+      background_color: '#0a0a0f',
+      surface_color: '#12121a',
+      text_color: '#e8e8f0',
+      primary_color: '#6366f1',
+      secondary_color: '#22d3ee'
+    };
+    
+    let currentRecordCount = 0;
+    let isSubmitting = false;
+    
+    // Business data for modals
+    const businessData = {
+      startups: {
+        title: '🚀 Startups',
+        problems: [
+          'Limited budget for web development',
+          'Need to launch quickly and iterate',
+          'Scaling challenges as you grow',
+          'Standing out in competitive markets'
+        ],
+        solutions: [
+          'Cost-effective AI-powered development',
+          'Rapid prototyping and MVP creation',
+          'Scalable architecture from day one',
+          'Unique, conversion-optimized designs'
+        ],
+        benefits: [
+          'Launch 3x faster than traditional development',
+          'Save up to 50% on development costs',
+          'Built-in analytics and optimization',
+          'AI-powered customer support automation'
+        ]
+      },
+      local: {
+        title: '🏪 Local Businesses',
+        problems: [
+          'Low visibility in local search results',
+          'Outdated or no online presence',
+          'Missing leads from mobile users',
+          'Difficulty managing online reputation'
+        ],
+        solutions: [
+          'Local SEO optimized websites',
+          'Mobile-first responsive design',
+          'Google Business integration',
+          'AI chatbots for 24/7 customer service'
+        ],
+        benefits: [
+          'Dominate local search rankings',
+          'Convert nearby customers instantly',
+          'Automated appointment booking',
+          'Real-time review management'
+        ]
+      },
+      agencies: {
+        title: '🎯 Agencies',
+        problems: [
+          'Need scalable client solutions',
+          'Resource constraints on projects',
+          'Maintaining quality at scale',
+          'White-label requirements'
+        ],
+        solutions: [
+          'White-label web development',
+          'Scalable project workflows',
+          'AI-assisted design and development',
+          'Bulk project management tools'
+        ],
+        benefits: [
+          'Increase project capacity by 200%',
+          'Consistent quality across clients',
+          'Reduce development time significantly',
+          'Full white-label customization'
+        ]
+      },
+      personal: {
+        title: '✨ Personal Brands',
+        problems: [
+          'Standing out from the crowd',
+          'Creating memorable digital presence',
+          'Managing content and portfolio',
+          'Converting visitors to clients'
+        ],
+        solutions: [
+          'Unique, custom-designed portfolios',
+          'AI-powered content optimization',
+          'Integrated booking and contact systems',
+          'Personal branding strategy'
+        ],
+        benefits: [
+          'Memorable first impressions',
+          '24/7 automated lead capture',
+          'SEO-optimized visibility',
+          'Professional credibility boost'
+        ]
+      },
+      enterprise: {
+        title: '🏢 Enterprises',
+        problems: [
+          'Complex integration requirements',
+          'Security and compliance needs',
+          'Large-scale performance demands',
+          'Multi-team collaboration'
+        ],
+        solutions: [
+          'Enterprise-grade architecture',
+          'Advanced security implementations',
+          'AI automation at scale',
+          'Custom API integrations'
+        ],
+        benefits: [
+          '99.9% uptime guaranteed',
+          'Full compliance support',
+          'Reduced operational costs',
+          'Seamless system integration'
+        ]
+      }
+    };
+    
+    // Data SDK Handler
+    const dataHandler = {
+      onDataChanged(data) {
+        currentRecordCount = data.length;
+      }
+    };
+    
+    // Initialize SDKs
+    async function initApp() {
+      // Initialize Element SDK
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => {
+            // Update hero section
+            const heroTitle = document.getElementById('hero-title');
+            if (heroTitle) {
+              const titleText = config.hero_title || defaultConfig.hero_title;
+              heroTitle.innerHTML = titleText.replace('Tailored for Your Business', '<span style="background: linear-gradient(90deg, #6366f1, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Tailored for Your Business</span>');
+            }
+            
+            const heroSubtitle = document.getElementById('hero-subtitle');
+            if (heroSubtitle) {
+              heroSubtitle.textContent = config.hero_subtitle || defaultConfig.hero_subtitle;
+            }
+            
+            // Update about section
+            const aboutName = document.getElementById('about-name');
+            if (aboutName) {
+              aboutName.textContent = config.about_name || defaultConfig.about_name;
+            }
+            
+            const aboutTitle = document.getElementById('about-title');
+            if (aboutTitle) {
+              aboutTitle.textContent = config.about_title || defaultConfig.about_title;
+            }
+            
+            // Update navigation name
+            const navName = document.getElementById('nav-name');
+            if (navName) {
+              navName.textContent = config.about_name || defaultConfig.about_name;
+            }
+            
+            // Update footer name
+            const footerName = document.getElementById('footer-name');
+            if (footerName) {
+              footerName.textContent = config.about_name || defaultConfig.about_name;
+            }
+            
+            // Update contact displays
+            const contactEmailDisplay = document.getElementById('contact-email-display');
+            if (contactEmailDisplay) {
+              const email = config.contact_email || defaultConfig.contact_email;
+              contactEmailDisplay.textContent = email;
+              contactEmailDisplay.href = 'mailto:' + email;
+            }
+            
+            const contactPhoneDisplay = document.getElementById('contact-phone-display');
+            if (contactPhoneDisplay) {
+              const phone = config.contact_phone || defaultConfig.contact_phone;
+              contactPhoneDisplay.textContent = phone;
+              contactPhoneDisplay.href = 'https://wa.me/' + phone.replace(/[^0-9]/g, '');
+            }
+            
+            // Update colors
+            document.documentElement.style.setProperty('--bg-primary', config.background_color || defaultConfig.background_color);
+            document.documentElement.style.setProperty('--surface', config.surface_color || defaultConfig.surface_color);
+            document.documentElement.style.setProperty('--text-primary', config.text_color || defaultConfig.text_color);
+            document.documentElement.style.setProperty('--accent-primary', config.primary_color || defaultConfig.primary_color);
+            document.documentElement.style.setProperty('--accent-secondary', config.secondary_color || defaultConfig.secondary_color);
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              {
+                get: () => config.background_color || defaultConfig.background_color,
+                set: (value) => { config.background_color = value; window.elementSdk.setConfig({ background_color: value }); }
+              },
+              {
+                get: () => config.surface_color || defaultConfig.surface_color,
+                set: (value) => { config.surface_color = value; window.elementSdk.setConfig({ surface_color: value }); }
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (value) => { config.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
+              },
+              {
+                get: () => config.primary_color || defaultConfig.primary_color,
+                set: (value) => { config.primary_color = value; window.elementSdk.setConfig({ primary_color: value }); }
+              },
+              {
+                get: () => config.secondary_color || defaultConfig.secondary_color,
+                set: (value) => { config.secondary_color = value; window.elementSdk.setConfig({ secondary_color: value }); }
+              }
+            ],
+            borderables: [],
+            fontEditable: undefined,
+            fontSizeable: undefined
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['hero_title', config.hero_title || defaultConfig.hero_title],
+            ['hero_subtitle', config.hero_subtitle || defaultConfig.hero_subtitle],
+            ['about_name', config.about_name || defaultConfig.about_name],
+            ['about_title', config.about_title || defaultConfig.about_title],
+            ['contact_email', config.contact_email || defaultConfig.contact_email],
+            ['contact_phone', config.contact_phone || defaultConfig.contact_phone]
+          ])
+        });
+      }
+      
+      // Initialize Data SDK
+      if (window.dataSdk) {
+        const initResult = await window.dataSdk.init(dataHandler);
+        if (!initResult.isOk) {
+          console.error('Failed to initialize Data SDK');
+        }
+      }
+    }
+    
+    // Navigation functions
+    function scrollToSection(sectionId) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+        updateActiveNav(sectionId);
+        
+        // Close mobile menu if open
+        const navLinks = document.getElementById('nav-links');
+        navLinks.classList.remove('active');
+      }
+    }
+    
+    function updateActiveNav(sectionId) {
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('onclick').includes(sectionId)) {
+          link.classList.add('active');
+        }
+      });
+    }
+    
+    function toggleMobileMenu() {
+      const navLinks = document.getElementById('nav-links');
+      navLinks.classList.toggle('active');
+    }
+    
+    // Business modal functions
+    function openBusinessModal(type) {
+      const data = businessData[type];
+      if (!data) return;
+      
+      const modal = document.getElementById('business-modal');
+      const content = document.getElementById('modal-content-inner');
+      
+      content.innerHTML = `
+        <h2 class="orbitron" style="font-size: 28px; font-weight: 700; margin-bottom: 24px; background: linear-gradient(90deg, #e8e8f0, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${data.title}</h2>
+        
+        <div style="margin-bottom: 24px;">
+          <h3 style="font-size: 18px; font-weight: 600; color: #f97316; margin-bottom: 12px;">❌ Common Problems</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+            ${data.problems.map(p => `<li style="color: rgba(232, 232, 240, 0.7); padding-left: 20px; position: relative;"><span style="position: absolute; left: 0;">•</span>${p}</li>`).join('')}
+          </ul>
+        </div>
+        
+        <div style="margin-bottom: 24px;">
+          <h3 style="font-size: 18px; font-weight: 600; color: #6366f1; margin-bottom: 12px;">🤖 AI-Powered Solutions</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+            ${data.solutions.map(s => `<li style="color: rgba(232, 232, 240, 0.7); padding-left: 20px; position: relative;"><span style="position: absolute; left: 0;">•</span>${s}</li>`).join('')}
+          </ul>
+        </div>
+        
+        <div style="margin-bottom: 24px;">
+          <h3 style="font-size: 18px; font-weight: 600; color: #22c55e; margin-bottom: 12px;">✅ Benefits & Outcomes</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+            ${data.benefits.map(b => `<li style="color: rgba(232, 232, 240, 0.7); padding-left: 20px; position: relative;"><span style="position: absolute; left: 0;">•</span>${b}</li>`).join('')}
+          </ul>
+        </div>
+        
+        <button class="btn-glow" style="width: 100%;" onclick="closeBusinessModal(); scrollToSection('contact');">
+          Get Started Now
+        </button>
+      `;
+      
+      modal.classList.add('active');
+    }
+    
+    function closeBusinessModal() {
+      const modal = document.getElementById('business-modal');
+      modal.classList.remove('active');
+    }
+    
+    // Close modal on overlay click
+    document.getElementById('business-modal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeBusinessModal();
+      }
+    });
+    
+    // Form submission
+    async function handleFormSubmit(event) {
+      event.preventDefault();
+      
+      if (isSubmitting) return;
+      
+      if (currentRecordCount >= 999) {
+        showToast('Maximum submissions reached. Please try again later.');
+        return;
+      }
+      
+      const form = event.target;
+      const submitBtn = document.getElementById('submit-btn');
+      const btnText = document.getElementById('btn-text');
+      const btnSpinner = document.getElementById('btn-spinner');
+      
+      // Get form data
+      const formData = {
+        name: form.name.value.trim(),
+        email: form.email.value.trim(),
+        business_type: form.business_type.value,
+        message: form.message.value.trim(),
+        submitted_at: new Date().toISOString()
+      };
+      
+      // Show loading state
+      isSubmitting = true;
+      submitBtn.disabled = true;
+      btnText.style.display = 'none';
+      btnSpinner.style.display = 'inline-block';
+      
+      try {
+        if (window.dataSdk) {
+          const result = await window.dataSdk.create(formData);
+          
+          if (result.isOk) {
+            showToast('Message sent successfully! I\'ll get back to you soon.');
+            form.reset();
+          } else {
+            showToast('Failed to send message. Please try again.');
+          }
+        } else {
+          // Fallback if SDK not available
+          showToast('Message sent successfully!');
+          form.reset();
+        }
+      } catch (error) {
+        showToast('An error occurred. Please try again.');
+      } finally {
+        isSubmitting = false;
+        submitBtn.disabled = false;
+        btnText.style.display = 'inline';
+        btnSpinner.style.display = 'none';
+      }
+    }
+    
+    // Toast notification
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toast-message');
+      
+      toastMessage.textContent = message;
+      toast.classList.add('active');
+      
+      setTimeout(() => {
+        toast.classList.remove('active');
+      }, 4000);
+    }
+    
+    // Initialize on load
+    initApp();
+    
+    // Intersection Observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+    
+    document.querySelectorAll('.animate-in').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bcbbee2677b8602',t:'MTc2ODIxMTM4NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
